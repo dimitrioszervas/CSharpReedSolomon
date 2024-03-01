@@ -2,6 +2,35 @@
 using CSharpReedSolomon.ReedSolomon;
 using System.Text;
 
+byte[] StripPadding(byte[] paddedData)
+{
+    try
+    {
+        int padding = 1;
+        for (int i = paddedData.Length - 1; i >= 0; i--)
+        {
+            if (paddedData[i] == 0)
+            {
+                padding++;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        byte[] strippedData = new byte[paddedData.Length - padding];
+        Array.Copy(paddedData, 0, strippedData, 0, strippedData.Length);
+
+        return strippedData;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
+        throw;
+    }
+}
+
 Console.WriteLine("Hello Reed-Solomon, World!");
 
 string text = "The Thirty Years' War[m] was a conflict fought largely within the Holy Roman Empire from " +
@@ -29,7 +58,6 @@ string text = "The Thirty Years' War[m] was a conflict fought largely within the
               " acceptance of Dutch independence by Spain. By weakening the Habsburgs relative to France, " +
               "the conflict altered the European balance of power and set the stage for the wars of Louis XIV.";
 
-text = "{\"bID\":\"94f9c2b20e54a23c\",\"dID\":\"af5658b9a78d46dc\",\"tID\":\"8e45a818c19297f1\",\"TS\":\"2024-02-16T01:18:45.520325494Z\",\"RT\":true,\"REQ\":[{\"TYP\":\"ListFiles\",\"ID\":\"b00a2bffc8e932e2\",\"snapTS\":\"\"}]}";
 Console.WriteLine("Input text:");
 Console.WriteLine(text);
 Console.WriteLine();
@@ -68,6 +96,8 @@ for (int j = 0; j < shards.Length - nParityShards; j++)
 }
 
 Console.WriteLine("Reassembled Output text:"); 
-string output = Encoding.ASCII.GetString(buffer);
+string output = Encoding.ASCII.GetString(StripPadding(buffer));
 Console.WriteLine(output);
 Console.WriteLine();
+short num = -1;
+Console.WriteLine((byte)num);
